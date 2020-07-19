@@ -72,6 +72,49 @@ type AddScheduleLabelData struct {
 	Type string `json:"type"`
 }
 
+// ResAddSchedule はスケジュール追加リクエストを出したときに返ってくるデータを収納する構造体
+type ResAddSchedule struct {
+	Data struct {
+		ID         string `json:"id"`
+		Type       string `json:"type"`
+		Attributes struct {
+			Category      string        `json:"category"`
+			Title         string        `json:"title"`
+			AllDay        bool          `json:"all_day"`
+			StartAt       time.Time     `json:"start_at"`
+			StartTimezone string        `json:"start_timezone"`
+			EndAt         time.Time     `json:"end_at"`
+			EndTimezone   string        `json:"end_timezone"`
+			Recurrences   []interface{} `json:"recurrences"`
+			Description   string        `json:"description"`
+			Location      string        `json:"location"`
+			URL           string        `json:"url"`
+			UpdatedAt     time.Time     `json:"updated_at"`
+			CreatedAt     time.Time     `json:"created_at"`
+		} `json:"attributes"`
+		Relationships struct {
+			Creator struct {
+				Data struct {
+					ID   string `json:"id"`
+					Type string `json:"type"`
+				} `json:"data"`
+			} `json:"creator"`
+			Label struct {
+				Data struct {
+					ID   string `json:"id"`
+					Type string `json:"type"`
+				} `json:"data"`
+			} `json:"label"`
+			Attendees struct {
+				Data []struct {
+					ID   string `json:"id"`
+					Type string `json:"type"`
+				} `json:"data"`
+			} `json:"attendees"`
+		} `json:"relationships"`
+	} `json:"data"`
+}
+
 func init() {
 	var err error
 
