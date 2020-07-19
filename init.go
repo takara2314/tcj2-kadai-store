@@ -38,19 +38,19 @@ type HomeworkStruct struct {
 	Due     time.Time `json:"due"`
 }
 
-// AddSchedule はTimeTreeに追加するスケジュールを格納する構造体
-type AddSchedule struct {
-	Data AddScheduleData `json:"data"`
+// SetSchedule はTimeTreeに追加するスケジュールを格納する構造体
+type SetSchedule struct {
+	Data SetScheduleData `json:"data"`
 }
 
-// AddScheduleData はTimeTreeに追加するスケジュールの情報を格納する構造体
-type AddScheduleData struct {
-	Attributes    AddScheduleAttributes    `json:"attributes"`
-	Relationships AddScheduleRelationships `json:"relationships"`
+// SetScheduleData はTimeTreeに追加するスケジュールの情報を格納する構造体
+type SetScheduleData struct {
+	Attributes    SetScheduleAttributes    `json:"attributes"`
+	Relationships SetScheduleRelationships `json:"relationships"`
 }
 
-// AddScheduleAttributes は追加するスケジュールの属性を格納する構造体
-type AddScheduleAttributes struct {
+// SetScheduleAttributes は追加するスケジュールの属性を格納する構造体
+type SetScheduleAttributes struct {
 	Category      string    `json:"category"`
 	Title         string    `json:"title"`
 	AllDay        bool      `json:"all_day"`
@@ -58,26 +58,27 @@ type AddScheduleAttributes struct {
 	StartTimezone string    `json:"start_timezone"`
 	EndAt         time.Time `json:"end_at"`
 	EndTimezone   string    `json:"end_timezone"`
+	Description   string    `json:"description"`
 }
 
-// AddScheduleRelationships は追加するスケジュールの関連するものを格納する構造体
-type AddScheduleRelationships struct {
-	Label AddScheduleLabel `json:"label"`
+// SetScheduleRelationships は追加するスケジュールの関連するものを格納する構造体
+type SetScheduleRelationships struct {
+	Label SetScheduleLabel `json:"label"`
 }
 
-// AddScheduleLabel は追加するスケジュールのラベルを格納する構造体
-type AddScheduleLabel struct {
-	Data AddScheduleLabelData `json:"data"`
+// SetScheduleLabel は追加するスケジュールのラベルを格納する構造体
+type SetScheduleLabel struct {
+	Data SetScheduleLabelData `json:"data"`
 }
 
-// AddScheduleLabelData は追加するスケジュールのラベルのデータを格納する構造体
-type AddScheduleLabelData struct {
+// SetScheduleLabelData は追加するスケジュールのラベルのデータを格納する構造体
+type SetScheduleLabelData struct {
 	ID   string `json:"id"`
 	Type string `json:"type"`
 }
 
-// ResAddSchedule はスケジュール追加リクエストを出したときに返ってくるデータを収納する構造体
-type ResAddSchedule struct {
+// ResSetSchedule はスケジュール追加リクエストを出したときに返ってくるデータを収納する構造体
+type ResSetSchedule struct {
 	Data struct {
 		ID         string `json:"id"`
 		Type       string `json:"type"`

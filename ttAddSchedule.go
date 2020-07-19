@@ -13,18 +13,18 @@ import (
 )
 
 // ttAddSchedule はTimeTreeに指定されたスケジュールを追加する関数
-func ttAddSchedule(hwName string, hwDue time.Time) (hwTTIDA string, hwTTIDB string) {
+func ttAddSchedule(hwName string, hwSubject string, hwDue time.Time) (hwTTIDA string, hwTTIDB string) {
 	var err error
 	var POSTjson []byte
 	// POSTに必要なJSONの情報を格納する構造体を初期化
-	var POSTjsonData AddSchedule
-	var scheData AddScheduleData
-	var scheAttribute AddScheduleAttributes
-	var scheRelate AddScheduleRelationships
-	var scheLabel AddScheduleLabel
-	var scheLabelData AddScheduleLabelData
+	var POSTjsonData SetSchedule
+	var scheData SetScheduleData
+	var scheAttribute SetScheduleAttributes
+	var scheRelate SetScheduleRelationships
+	var scheLabel SetScheduleLabel
+	var scheLabelData SetScheduleLabelData
 
-	scheAttribute = AddScheduleAttributes{
+	scheAttribute = SetScheduleAttributes{
 		Category:      "schedule",
 		Title:         hwName,
 		AllDay:        false,
@@ -32,24 +32,25 @@ func ttAddSchedule(hwName string, hwDue time.Time) (hwTTIDA string, hwTTIDB stri
 		StartTimezone: "Asia/Tokyo",
 		EndAt:         hwDue,
 		EndTimezone:   "Asia/Tokyo",
+		Description:   hwSubject + "の課題です。",
 	}
 
-	scheLabelData = AddScheduleLabelData{
+	scheLabelData = SetScheduleLabelData{
 		ID:   "KADAI_LABEL_ID",
 		Type: "label",
 	}
 
-	scheLabel = AddScheduleLabel{
+	scheLabel = SetScheduleLabel{
 		Data: scheLabelData,
 	}
-	scheRelate = AddScheduleRelationships{
+	scheRelate = SetScheduleRelationships{
 		Label: scheLabel,
 	}
-	scheData = AddScheduleData{
+	scheData = SetScheduleData{
 		Attributes:    scheAttribute,
 		Relationships: scheRelate,
 	}
-	POSTjsonData = AddSchedule{
+	POSTjsonData = SetSchedule{
 		Data: scheData,
 	}
 
@@ -106,7 +107,7 @@ func ttAddSchedulePOST(calendarID string, POSTjson []byte) (string, error) {
 
 	body, _ := ioutil.ReadAll(res.Body)
 	// レスポンスされたものを格納する構造体
-	var resData ResAddSchedule
+	var resData ResSetSchedule
 	// JSONをmapに変換
 	json.Unmarshal(body, &resData)
 	// 予定IDを返す

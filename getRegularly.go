@@ -103,10 +103,11 @@ func getRegularly(getTime []int) {
 
 			// 新規追加されたものをスケジュールとデータベースに追加
 			for _, hwID := range newHW {
-				// スケジュール名と提出期限を渡してTimeTreeに予定として追加してもらい、
+				// スケジュール名と課題名と提出期限を渡してTimeTreeに予定として追加してもらい、
 				// 予定IDを取得
 				hwStatus[hwID][6], hwStatus[hwID][7] = ttAddSchedule(
 					hwStatus[hwID][5].(string),
+					hwStatus[hwID][0].(string),
 					hwStatus[hwID][4].(time.Time),
 				)
 
@@ -116,6 +117,12 @@ func getRegularly(getTime []int) {
 
 			// 内容変更があったものをスケジュールに反映・データベースを更新
 			for _, hwID := range updateHW {
+				// TimeTree関連のデータは新規作成時にしか取得できないので、過去のものを引き継ぐ
+				hwStatus[hwID][5] = hwStatusPast[hwID][5]
+				hwStatus[hwID][6] = hwStatusPast[hwID][6]
+				hwStatus[hwID][7] = hwStatusPast[hwID][7]
+				// そのIDを渡してカレンダー情報を変更してもらう
+				ttUpdateSchedule(hwID)
 				// 課題情報をFirebaseに上書き保存
 				dbSetKadai(ctx, client, hwID, hwStatus[hwID])
 			}

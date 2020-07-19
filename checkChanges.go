@@ -6,7 +6,7 @@ import (
 
 // checkChanges は前の課題情報と比べて変更点がないかをチェック
 func checkChanges() (newHW []string, updateHW []string, deleteHW []string) {
-	// 前の課題の数が0なら、新規追加確定
+	// 前の課題の数が0なら、すべて新規追加確定
 	if len(hwListPast) == 0 {
 		// 今の課題情報を過去のものにする
 		hwStatusPast = hwStatus
