@@ -9,8 +9,14 @@ import (
 const location = "Asia/Tokyo"
 
 var (
-	// 課題リスト (マップ)
-	homeworkList map[string][]interface{} = make(map[string][]interface{}, 0)
+	// 現在の課題情報
+	hwStatus GetHomeworks
+	// 現在の課題リスト (ID)
+	hwList []string
+	// 前の課題情報
+	hwStatusPast GetHomeworks
+	// 前の課題リスト (ID)
+	hwListPast []string
 )
 
 // GetHomeworks はAPIから取得したJSONを収納する構造体

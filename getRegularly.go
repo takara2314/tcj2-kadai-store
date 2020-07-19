@@ -30,6 +30,7 @@ func getRegularly(getTime []int) {
 			// dueパラメータを指定
 			reqURLvar, _ := url.ParseQuery(reqURL.RawQuery)
 			reqURLvar.Add("due", "future")
+			reqURLvar.Add("timezone", "JST")
 			reqURL.RawQuery = reqURLvar.Encode()
 
 			// リクエスト詳細を定義
@@ -43,24 +44,20 @@ func getRegularly(getTime []int) {
 			body, _ := ioutil.ReadAll(response.Body)
 			// fmt.Println(string(body))
 
-			var jsonData GetHomeworks
-			err = json.Unmarshal(body, &jsonData)
+			// レスポンスされたJSONを構造体化
+			err = json.Unmarshal(body, &hwStatus)
 			if err != nil {
 				panic(err)
 			}
 
-			var homeworkID, homeworkName string
-			var homeworkDue time.Time
-
-			for i := 0; i < len(jsonData.Homeworks); i++ {
-				homeworkID = jsonData.Homeworks[i].ID
-				homeworkName = jsonData.Homeworks[i].Name
-				homeworkDue = jsonData.Homeworks[i].Due
-
-				homeworkList[jsonData.Homeworks[i].ID] = []interface{}{homeworkID, homeworkName, homeworkDue}
+			// 課題リストを抽出
+			for i := 0; i < len(hwStatus.Homeworks); i++ {
+				hwList = append(hwList, hwStatus.Homeworks[i].ID)
 			}
 
-			fmt.Println(homeworkList)
+			// 前の課題情報と比べて変更点がないかをチェック
+			newHW, updateHW, deleteHW := checkChanges()
+			fmt.Println(newHW, updateHW, deleteHW)
 			time.Sleep(1 * time.Minute)
 		}
 	}
