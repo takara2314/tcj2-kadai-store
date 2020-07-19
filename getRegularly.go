@@ -41,8 +41,7 @@ func getRegularly(getTime []int) {
 			response, _ := http.DefaultClient.Do(req)
 
 			body, _ := ioutil.ReadAll(response.Body)
-
-			fmt.Println(string(body))
+			// fmt.Println(string(body))
 
 			var jsonData GetHomeworks
 			err = json.Unmarshal(body, &jsonData)
@@ -50,12 +49,18 @@ func getRegularly(getTime []int) {
 				panic(err)
 			}
 
-			var nameList []string = make([]string, 0)
+			var homeworkID, homeworkName string
+			var homeworkDue time.Time
+
 			for i := 0; i < len(jsonData.Homeworks); i++ {
-				nameList = append(nameList, jsonData.Homeworks[i].Name)
+				homeworkID = jsonData.Homeworks[i].ID
+				homeworkName = jsonData.Homeworks[i].Name
+				homeworkDue = jsonData.Homeworks[i].Due
+
+				homeworkList[jsonData.Homeworks[i].ID] = []interface{}{homeworkID, homeworkName, homeworkDue}
 			}
 
-			fmt.Println("現在の課題リスト:", nameList)
+			fmt.Println(homeworkList)
 			time.Sleep(1 * time.Minute)
 		}
 	}

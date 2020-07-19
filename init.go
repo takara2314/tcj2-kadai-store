@@ -8,6 +8,11 @@ import (
 
 const location = "Asia/Tokyo"
 
+var (
+	// 課題リスト (マップ)
+	homeworkList map[string][]interface{} = make(map[string][]interface{}, 0)
+)
+
 // GetHomeworks はAPIから取得したJSONを収納する構造体
 type GetHomeworks struct {
 	Acquisition time.Time        `json:"acquisition"`
