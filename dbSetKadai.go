@@ -31,10 +31,11 @@ func dbSetKadai(hwID string, hwData []interface{}) {
 		"subject":                  hwData[0],
 		"omitted":                  hwData[1],
 		"name":                     hwData[2],
-		"due":                      hwData[3],
-		"timetree_name":            hwData[4],
-		"timetree_j2a_schedule_id": hwData[5],
-		"timetree_j2b_schedule_id": hwData[6],
+		"id":                       hwData[3],
+		"due":                      hwData[4],
+		"timetree_name":            hwData[5],
+		"timetree_j2a_schedule_id": hwData[6],
+		"timetree_j2b_schedule_id": hwData[7],
 	})
 	if err != nil {
 		log.Fatalf("エラーが発生しました: %s\n", err)

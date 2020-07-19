@@ -48,7 +48,6 @@ func getRegularly(getTime []int) {
 			defer res.Body.Close()
 
 			body, _ := ioutil.ReadAll(res.Body)
-			// fmt.Println(string(body))
 
 			// レスポンスされたJSONを構造体化
 			var hwStatusStruct GetHomeworks
@@ -72,8 +71,8 @@ func getRegularly(getTime []int) {
 				hwTTIDB := ""
 
 				// 課題情報を抽出
-				// (教科名、省略された教科名、課題名、提出期限、TimeTreeスケジュール名、TimeTreeカレンダーID(A)、 TimeTreeカレンダーID(B))
-				hwStatus[hwID] = []interface{}{hwSubject, hwOmitted, hwName, hwDue, hwTTscheName, hwTTIDA, hwTTIDB}
+				// (教科名、省略された教科名、課題名、課題ID、提出期限、TimeTreeスケジュール名、TimeTreeカレンダーID(A)、 TimeTreeカレンダーID(B))
+				hwStatus[hwID] = []interface{}{hwSubject, hwOmitted, hwName, hwID, hwDue, hwTTscheName, hwTTIDA, hwTTIDB}
 				// 課題リストを抽出
 				hwList = append(hwList, hwInfo.ID)
 			}
@@ -88,15 +87,16 @@ func getRegularly(getTime []int) {
 			for _, hwID := range newHW {
 				// スケジュール名と提出期限を渡してTimeTreeに予定として追加してもらい、
 				// 予定IDを取得
-				hwStatus[hwID][5], hwStatus[hwID][6] = ttAddSchedule(
-					hwStatus[hwID][4].(string),
-					hwStatus[hwID][3].(time.Time),
+				hwStatus[hwID][6], hwStatus[hwID][7] = ttAddSchedule(
+					hwStatus[hwID][5].(string),
+					hwStatus[hwID][4].(time.Time),
 				)
 
 				// 課題情報をFirebaseに保存
 				dbSetKadai(hwID, hwStatus[hwID])
 			}
 
+			fmt.Println("task finished")
 			time.Sleep(1 * time.Minute)
 		}
 	}
