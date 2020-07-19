@@ -10,11 +10,11 @@ const location = "Asia/Tokyo"
 
 var (
 	// 現在の課題情報
-	hwStatus GetHomeworks
+	hwStatus map[string][]interface{} = make(map[string][]interface{}, 0)
 	// 現在の課題リスト (ID)
 	hwList []string
 	// 前の課題情報
-	hwStatusPast GetHomeworks
+	hwStatusPast map[string][]interface{} = make(map[string][]interface{}, 0)
 	// 前の課題リスト (ID)
 	hwListPast []string
 )

@@ -13,5 +13,12 @@ func checkChanges() (newHW []string, updateHW []string, deleteHW []string) {
 		return
 	}
 
+	// 課題IDごとに変更点を確認
+	for _, hwID := range hwList {
+		// 過去の課題情報に、対象のIDが存在していなかったら、新規追加
+		if _, exist := hwStatusPast[hwID]; !exist {
+			newHW = append(newHW, hwID)
+		}
+	}
 	return
 }

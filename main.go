@@ -6,7 +6,7 @@ import (
 
 func main() {
 	// 毎時指定した時間に TCJ2 Kadai Store API から課題一覧を取得
-	go getRegularly([]int{1, 6, 11, 13, 14, 15, 16, 21, 26, 31, 36, 38, 41, 46, 51, 56})
+	go getRegularly([]int{1, 6, 11, 13, 14, 15, 16, 21, 26, 31, 36, 38, 41, 46, 49, 51, 56})
 
 	r := gin.Default()
 

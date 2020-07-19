@@ -45,19 +45,31 @@ func getRegularly(getTime []int) {
 			// fmt.Println(string(body))
 
 			// レスポンスされたJSONを構造体化
-			err = json.Unmarshal(body, &hwStatus)
+			var hwStatusStruct GetHomeworks
+			err = json.Unmarshal(body, &hwStatusStruct)
 			if err != nil {
 				panic(err)
 			}
 
-			// 課題リストを抽出
-			for i := 0; i < len(hwStatus.Homeworks); i++ {
-				hwList = append(hwList, hwStatus.Homeworks[i].ID)
+			// 構造体化したものをmapに変換
+			for _, hwInfo := range hwStatusStruct.Homeworks {
+				hwSubject := hwInfo.Subject
+				hwOmitted := hwInfo.Omitted
+				hwName := hwInfo.Name
+				hwID := hwInfo.ID
+				hwDue := hwInfo.Due
+
+				// 課題情報を抽出
+				hwStatus[hwID] = []interface{}{hwSubject, hwOmitted, hwName, hwDue}
+				// 課題リストを抽出
+				hwList = append(hwList, hwInfo.ID)
 			}
 
 			// 前の課題情報と比べて変更点がないかをチェック
 			newHW, updateHW, deleteHW := checkChanges()
-			fmt.Println(newHW, updateHW, deleteHW)
+			fmt.Println("新規追加ID:", newHW)
+			fmt.Println("内容変更ID:", updateHW)
+			fmt.Println("削除ID:", deleteHW)
 			time.Sleep(1 * time.Minute)
 		}
 	}
