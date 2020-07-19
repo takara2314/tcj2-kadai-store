@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -11,6 +12,9 @@ import (
 	"path"
 	"strings"
 	"time"
+
+	firebase "firebase.google.com/go"
+	"google.golang.org/api/option"
 )
 
 // getRegularly は定期的に課題一覧を取得したり、TimeTreeのスケジュールを変更する関数
@@ -77,13 +81,27 @@ func getRegularly(getTime []int) {
 				hwList = append(hwList, hwInfo.ID)
 			}
 
+			// Firebaseを初期化
+			ctx := context.Background()
+			sa := option.WithCredentialsFile("tcj2-kadai-store-ed48273c015c.json")
+			app, err := firebase.NewApp(ctx, nil, sa)
+			if err != nil {
+				log.Fatalln(err)
+			}
+
+			client, err := app.Firestore(ctx)
+			if err != nil {
+				log.Fatalln(err)
+			}
+			defer client.Close()
+
 			// 前の課題情報と比べて変更点がないかをチェック
 			newHW, updateHW, deleteHW := checkChanges()
 			fmt.Println("新規追加ID:", newHW)
 			fmt.Println("内容変更ID:", updateHW)
 			fmt.Println("削除ID:", deleteHW)
 
-			// 新規追加されたものをスケジュールに追加
+			// 新規追加されたものをスケジュールとデータベースに追加
 			for _, hwID := range newHW {
 				// スケジュール名と提出期限を渡してTimeTreeに予定として追加してもらい、
 				// 予定IDを取得
@@ -93,7 +111,13 @@ func getRegularly(getTime []int) {
 				)
 
 				// 課題情報をFirebaseに保存
-				dbSetKadai(hwID, hwStatus[hwID])
+				dbSetKadai(ctx, client, hwID, hwStatus[hwID])
+			}
+
+			// 内容変更があったものをスケジュールに反映・データベースを更新
+			for _, hwID := range updateHW {
+				// 課題情報をFirebaseに上書き保存
+				dbSetKadai(ctx, client, hwID, hwStatus[hwID])
 			}
 
 			fmt.Println("task finished")

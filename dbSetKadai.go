@@ -4,30 +4,13 @@ import (
 	"context"
 	"log"
 
-	firebase "firebase.google.com/go"
-	"google.golang.org/api/option"
+	"cloud.google.com/go/firestore"
 )
 
 // dbSetKadai は課題情報をFirebaseに保存(更新)する関数
-func dbSetKadai(hwID string, hwData []interface{}) {
-	var err error
-
-	// Firebaseを初期化
-	ctx := context.Background()
-	sa := option.WithCredentialsFile("tcj2-kadai-store-ed48273c015c.json")
-	app, err := firebase.NewApp(ctx, nil, sa)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	client, err := app.Firestore(ctx)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	defer client.Close()
-
+func dbSetKadai(ctx context.Context, client *firestore.Client, hwID string, hwData []interface{}) {
 	// コレクションkadaisに課題情報を追加
-	_, err = client.Collection("kadais").Doc(hwID).Set(ctx, map[string]interface{}{
+	_, err := client.Collection("kadais").Doc(hwID).Set(ctx, map[string]interface{}{
 		"subject":                  hwData[0],
 		"omitted":                  hwData[1],
 		"name":                     hwData[2],

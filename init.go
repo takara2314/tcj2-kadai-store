@@ -1,9 +1,13 @@
 package main
 
 import (
+	"context"
+	"log"
 	"time"
 
+	firebase "firebase.google.com/go"
 	_ "github.com/lib/pq"
+	"google.golang.org/api/option"
 )
 
 const location = "Asia/Tokyo"
@@ -124,4 +128,21 @@ func init() {
 		loc = time.FixedZone(location, 9*60*60)
 	}
 	time.Local = loc
+
+	// Firebaseを初期化
+	ctx := context.Background()
+	sa := option.WithCredentialsFile("tcj2-kadai-store-ed48273c015c.json")
+	app, err := firebase.NewApp(ctx, nil, sa)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	client, err := app.Firestore(ctx)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer client.Close()
+
+	// Firebaseから最後に起動していた時の課題情報を取得
+	dbGetKadai(ctx, client)
 }
