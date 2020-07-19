@@ -21,6 +21,6 @@ func dbSetKadai(ctx context.Context, client *firestore.Client, hwID string, hwDa
 		"timetree_j2b_schedule_id": hwData[7],
 	})
 	if err != nil {
-		log.Fatalf("エラーが発生しました: %s\n", err)
+		log.Fatalf("エラーが発生しました: %v\n", err)
 	}
 }

@@ -6,27 +6,50 @@ import (
 
 // checkChanges は前の課題情報と比べて変更点がないかをチェック
 func checkChanges() (newHW []string, updateHW []string, deleteHW []string) {
-	// 前の課題の数が0なら、すべて新規追加確定
-	if len(hwListPast) == 0 {
-		// 今の課題情報を過去のものにする
-		hwStatusPast = hwStatus
-		hwListPast = hwList
-		// 現在の課題情報は全て新規追加
-		newHW = hwList
+	var bothHW []string
 
-		return
-	}
+	// 過去の課題リストと現在の課題リストを比べたとき、
+	// どちらかにしかないものが新規・削除である
+	newHW, deleteHW, bothHW = checkEitherers()
 
 	// 課題IDごとに変更点を確認
-	for _, hwID := range hwList {
-		// 過去の課題情報に、現在のIDが存在していなかったら、新規追加
-		// 現在の課題情報に、過去のIDが存在していなかったら、削除
-
+	for _, hwID := range bothHW {
 		// 過去の課題情報と現在の課題情報を比べて内容が変更されていたら、内容変更
 		if isUpdated := checkInfoUpdate(hwID); isUpdated {
 			updateHW = append(updateHW, hwID)
 		}
 	}
+	return
+}
+
+// checkEitherers は過去の課題リストと現在の課題リストを比べたとき、
+// どちらかにしかないものを返したり、どちらにもあるもの返す関数
+func checkEitherers() (newHW []string, deleteHW []string, bothHW []string) {
+	var hwListMap map[string]int = make(map[string]int, 0)
+	var hwListPastMap map[string]int = make(map[string]int, 0)
+
+	// リスト内検索がしやすいように、リストからマップに変換
+	for _, hwID := range hwList {
+		hwListMap[hwID] = 1
+	}
+	for _, hwID := range hwListPast {
+		hwListPastMap[hwID] = 1
+	}
+
+	// もしどちらかに存在しない場合、追加されたり消されているとみなす
+	for _, hwID := range hwList {
+		if _, exist := hwListPastMap[hwID]; !exist {
+			newHW = append(newHW, hwID)
+		} else {
+			bothHW = append(bothHW, hwID)
+		}
+	}
+	for _, hwID := range hwListPast {
+		if _, exist := hwListMap[hwID]; !exist {
+			deleteHW = append(deleteHW, hwID)
+		}
+	}
+
 	return
 }
 

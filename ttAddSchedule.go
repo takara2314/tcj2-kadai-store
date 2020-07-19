@@ -99,7 +99,7 @@ func ttAddSchedulePOST(calendarID string, POSTjson []byte) (string, error) {
 	// POSTリクエストを送信
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Fatalf("エラーが発生しました: %s\n", err)
+		log.Fatalf("エラーが発生しました: %v\n", err)
 		// 予定IDは発行できなかったので、空白にしてエラーとして返す
 		return "", err
 	}

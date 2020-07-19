@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -47,7 +46,7 @@ func getRegularly(getTime []int) {
 			// APIを叩いてレスポンスを受け取る
 			res, err := http.DefaultClient.Do(req)
 			if err != nil {
-				log.Fatalf("エラーが発生しました: %s\n", err)
+				log.Fatalf("エラーが発生しました: %v\n", err)
 			}
 			defer res.Body.Close()
 
@@ -96,10 +95,10 @@ func getRegularly(getTime []int) {
 			defer client.Close()
 
 			// 前の課題情報と比べて変更点がないかをチェック
-			newHW, updateHW, deleteHW := checkChanges()
-			fmt.Println("新規追加ID:", newHW)
-			fmt.Println("内容変更ID:", updateHW)
-			fmt.Println("削除ID:", deleteHW)
+			newHW, updateHW, _ := checkChanges()
+			// fmt.Println("新規追加ID:", newHW)
+			// fmt.Println("内容変更ID:", updateHW)
+			// fmt.Println("削除ID:", deleteHW)
 
 			// 新規追加されたものをスケジュールとデータベースに追加
 			for _, hwID := range newHW {
@@ -127,7 +126,10 @@ func getRegularly(getTime []int) {
 				dbSetKadai(ctx, client, hwID, hwStatus[hwID])
 			}
 
-			fmt.Println("task finished")
+			// 削除された課題をスケジュールとデータベースからも削除
+			// → 今後のアップデートで実装予定
+
+			// fmt.Println("task finished")
 			time.Sleep(1 * time.Minute)
 		}
 	}

@@ -89,7 +89,7 @@ func ttUpdateSchedulePOST(calendarID string, eventID string, POSTjson []byte) {
 
 	// PUTリクエストを送信
 	_, err = http.DefaultClient.Do(req)
-	if err == nil {
-		log.Fatalf("エラーが発生しました: %s\n", err)
+	if err != nil {
+		log.Fatalf("エラーが発生しました: %v\n", err)
 	}
 }
