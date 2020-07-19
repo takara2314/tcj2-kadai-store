@@ -15,10 +15,23 @@ func checkChanges() (newHW []string, updateHW []string, deleteHW []string) {
 
 	// 課題IDごとに変更点を確認
 	for _, hwID := range hwList {
-		// 過去の課題情報に、対象のIDが存在していなかったら、新規追加
-		if _, exist := hwStatusPast[hwID]; !exist {
-			newHW = append(newHW, hwID)
+		// 過去の課題情報に、現在のIDが存在していなかったら、新規追加
+		// 現在の課題情報に、過去のIDが存在していなかったら、削除
+
+		// 過去の課題情報と現在の課題情報を比べて内容が変更されていたら、内容変更
+		if isUpdated := checkInfoUpdate(hwID); isUpdated {
+			updateHW = append(updateHW, hwID)
 		}
 	}
 	return
+}
+
+// checkInfoUpdate は過去の課題情報と現在の課題情報を比べて内容が変更されていたら、trueを返す関数
+func checkInfoUpdate(hwID string) bool {
+	for i := 0; i < len(hwStatus[hwID]); i++ {
+		if hwStatus[hwID][i] != hwStatusPast[hwID][i] {
+			return true
+		}
+	}
+	return false
 }

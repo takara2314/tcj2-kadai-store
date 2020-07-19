@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -30,7 +31,7 @@ func getRegularly(getTime []int) {
 			// dueパラメータを指定
 			reqURLvar, _ := url.ParseQuery(reqURL.RawQuery)
 			reqURLvar.Add("due", "future")
-			reqURLvar.Add("timezone", "JST")
+			reqURLvar.Add("timezone", "Asia/Tokyo")
 			reqURL.RawQuery = reqURLvar.Encode()
 
 			// リクエスト詳細を定義
@@ -39,7 +40,10 @@ func getRegularly(getTime []int) {
 			req.Header.Add("Authorization", "Bearer "+os.Getenv("KADAI_API_TOKEN"))
 
 			// APIを叩いてレスポンスを受け取る
-			response, _ := http.DefaultClient.Do(req)
+			response, err := http.DefaultClient.Do(req)
+			if err != nil {
+				log.Fatalf("エラーが発生しました: %s\n", err)
+			}
 
 			body, _ := ioutil.ReadAll(response.Body)
 			// fmt.Println(string(body))
@@ -70,6 +74,12 @@ func getRegularly(getTime []int) {
 			fmt.Println("新規追加ID:", newHW)
 			fmt.Println("内容変更ID:", updateHW)
 			fmt.Println("削除ID:", deleteHW)
+
+			// 新規追加されたものをスケジュールに追加
+			for _, hwID := range newHW {
+				ttAddSchedule(fmt.Sprint(hwStatus[hwID][2].(string)), hwStatus[hwID][3].(time.Time))
+			}
+
 			time.Sleep(1 * time.Minute)
 		}
 	}

@@ -34,6 +34,44 @@ type HomeworkStruct struct {
 	Due     time.Time `json:"due"`
 }
 
+// AddSchedule はTimeTreeに追加するスケジュールを格納する構造体
+type AddSchedule struct {
+	Data AddScheduleData `json:"data"`
+}
+
+// AddScheduleData はTimeTreeに追加するスケジュールの情報を格納する構造体
+type AddScheduleData struct {
+	Attributes    AddScheduleAttributes    `json:"attributes"`
+	Relationships AddScheduleRelationships `json:"relationships"`
+}
+
+// AddScheduleAttributes は追加するスケジュールの属性を格納する構造体
+type AddScheduleAttributes struct {
+	Category      string    `json:"category"`
+	Title         string    `json:"title"`
+	AllDay        bool      `json:"all_day"`
+	StartAt       time.Time `json:"start_at"`
+	StartTimezone string    `json:"start_timezone"`
+	EndAt         time.Time `json:"end_at"`
+	EndTimezone   string    `json:"end_timezone"`
+}
+
+// AddScheduleRelationships は追加するスケジュールの関連するものを格納する構造体
+type AddScheduleRelationships struct {
+	Label AddScheduleLabel `json:"label"`
+}
+
+// AddScheduleLabel は追加するスケジュールのラベルを格納する構造体
+type AddScheduleLabel struct {
+	Data AddScheduleLabelData `json:"data"`
+}
+
+// AddScheduleLabelData は追加するスケジュールのラベルのデータを格納する構造体
+type AddScheduleLabelData struct {
+	ID   string `json:"id"`
+	Type string `json:"type"`
+}
+
 func init() {
 	var err error
 
