@@ -28,10 +28,6 @@ func getRegularly(getTime []int) {
 			hwStatus = make(map[string][]interface{}, 0)
 			hwList = make([]string, 0)
 
-			fmt.Print("\n\n\n")
-			fmt.Println("初期化後の課題情報:", hwStatus)
-			fmt.Println("初期化後の課題リスト:", hwList)
-
 			// TCJ2 Kadai Store API
 			var baseURL string = "http://tcj2-kadai-store-api.2314.tk/"
 			reqURL, err := url.Parse(baseURL)
@@ -130,7 +126,7 @@ func getRegularly(getTime []int) {
 
 			// 内容変更があったものをスケジュールに反映・データベースを更新
 			for _, hwID := range updateHW {
-				fmt.Println("変更します！！！")
+				fmt.Println("課題の内容が変更されました:", hwID)
 				// TimeTree関連のデータは新規作成時にしか取得できないので、過去のものを引き継ぐ
 				hwStatus[hwID][5] = hwStatusPast[hwID][5]
 				hwStatus[hwID][6] = hwStatusPast[hwID][6]
