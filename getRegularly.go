@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -96,8 +97,9 @@ func getRegularly(getTime []int) {
 
 			// 前の課題情報と比べて変更点がないかをチェック
 			newHW, updateHW, _ := checkChanges()
-			// fmt.Println("新規追加ID:", newHW)
-			// fmt.Println("内容変更ID:", updateHW)
+			fmt.Println(time.Now().Format("2006年1月2日 15時4分5秒"), "現在")
+			fmt.Println("新規追加ID:", newHW)
+			fmt.Println("内容変更ID:", updateHW)
 			// fmt.Println("削除ID:", deleteHW)
 
 			// 新規追加されたものをスケジュールとデータベースに追加
@@ -116,6 +118,7 @@ func getRegularly(getTime []int) {
 
 			// 内容変更があったものをスケジュールに反映・データベースを更新
 			for _, hwID := range updateHW {
+				fmt.Println("変更します！！！")
 				// TimeTree関連のデータは新規作成時にしか取得できないので、過去のものを引き継ぐ
 				hwStatus[hwID][5] = hwStatusPast[hwID][5]
 				hwStatus[hwID][6] = hwStatusPast[hwID][6]
@@ -129,7 +132,7 @@ func getRegularly(getTime []int) {
 			// 削除された課題をスケジュールとデータベースからも削除
 			// → 今後のアップデートで実装予定
 
-			// fmt.Println("task finished")
+			fmt.Println("task finished")
 			time.Sleep(1 * time.Minute)
 		}
 	}
