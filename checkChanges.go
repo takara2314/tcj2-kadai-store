@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -27,6 +28,9 @@ func checkChanges() (newHW []string, updateHW []string, deleteHW []string) {
 func checkEitherers() (newHW []string, deleteHW []string, bothHW []string) {
 	var hwListMap map[string]int = make(map[string]int, 0)
 	var hwListPastMap map[string]int = make(map[string]int, 0)
+
+	fmt.Println("現在の課題リスト:", hwList)
+	fmt.Println("過去の課題リスト:", hwListPast)
 
 	// リスト内検索がしやすいように、リストからマップに変換
 	for _, hwID := range hwList {

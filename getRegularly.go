@@ -24,6 +24,10 @@ func getRegularly(getTime []int) {
 
 		// 指定した時間になったら実行
 		if containsInt(getTime, nowMinute) {
+			// 新鮮ピッチピチな課題情報を入れるために、要素数を0にする
+			hwStatus = make(map[string][]interface{}, 0)
+			hwList = make([]string, 0)
+
 			// TCJ2 Kadai Store API
 			var baseURL string = "http://tcj2-kadai-store-api.2314.tk/"
 			reqURL, err := url.Parse(baseURL)
