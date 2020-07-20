@@ -23,10 +23,14 @@ func getRegularly(getTime []int) {
 		var nowMinute int = time.Now().Minute()
 
 		// 指定した時間になったら実行
-		if containsInt(getTime, nowMinute) {
+		if _, isExist := containsInt(getTime, nowMinute); isExist {
 			// 新鮮ピッチピチな課題情報を入れるために、要素数を0にする
 			hwStatus = make(map[string][]interface{}, 0)
 			hwList = make([]string, 0)
+
+			fmt.Print("\n\n\n")
+			fmt.Println("初期化後の課題情報:", hwStatus)
+			fmt.Println("初期化後の課題リスト:", hwList)
 
 			// TCJ2 Kadai Store API
 			var baseURL string = "http://tcj2-kadai-store-api.2314.tk/"
@@ -116,6 +120,10 @@ func getRegularly(getTime []int) {
 					hwStatus[hwID][4].(time.Time),
 				)
 
+				// 過去の課題情報に今の課題情報を書き加える
+				hwStatusPast[hwID] = hwStatus[hwID]
+				hwListPast = append(hwListPast, hwID)
+
 				// 課題情報をFirebaseに保存
 				dbSetKadai(ctx, client, hwID, hwStatus[hwID])
 			}
@@ -129,6 +137,10 @@ func getRegularly(getTime []int) {
 				hwStatus[hwID][7] = hwStatusPast[hwID][7]
 				// そのIDを渡してカレンダー情報を変更してもらう
 				ttUpdateSchedule(hwID)
+
+				// 過去の課題情報に今の課題情報を書きかえる
+				hwStatusPast[hwID] = hwStatus[hwID]
+
 				// 課題情報をFirebaseに上書き保存
 				dbSetKadai(ctx, client, hwID, hwStatus[hwID])
 			}
@@ -152,12 +164,12 @@ func scheNameGen(hwOmitted string, hwName string) (gened string) {
 	return hwOmitted + " " + hwName
 }
 
-// containsInt はint型のスライスから特定の整数があればtrueを返す関数
-func containsInt(tSlice []int, tNum int) bool {
-	for _, num := range tSlice {
+// containsInt はint型のスライスから特定の整数の要素数番号と存在するかを返す関数
+func containsInt(tSlice []int, tNum int) (int, bool) {
+	for i, num := range tSlice {
 		if tNum == num {
-			return true
+			return i, true
 		}
 	}
-	return false
+	return -1, false
 }
