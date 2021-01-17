@@ -2,17 +2,21 @@ package main
 
 import (
 	"context"
+	"io/ioutil"
 	"log"
 	"time"
 
 	firebase "firebase.google.com/go"
 	_ "github.com/lib/pq"
 	"google.golang.org/api/option"
+	"gopkg.in/yaml.v2"
 )
 
 const location = "Asia/Tokyo"
 
 var (
+	// subjects.yaml で設定した教科情報
+	subjects subjectsYaml
 	// 現在の課題情報
 	hwStatus map[string][]interface{} = make(map[string][]interface{}, 0)
 	// 現在の課題リスト (ID)
@@ -23,19 +27,25 @@ var (
 	hwListPast []string
 )
 
+// subjects.yaml のデータを格納する構造体
+type subjectsYaml struct {
+	Subjects [][]string `yaml:"subjects"`
+}
+
 // GetHomeworks はAPIから取得したJSONを収納する構造体
 type GetHomeworks struct {
 	Acquisition time.Time        `json:"acquisition"`
-	Homeworks   []HomeworkStruct `json:"homeworks"`
+	Homeworks   []HomeworkStruct `json:"assignments"`
 }
 
 // HomeworkStruct は1つの課題情報を収納する構造体
 type HomeworkStruct struct {
-	Subject string    `json:"subject"`
-	Omitted string    `json:"omitted"`
-	Name    string    `json:"name"`
-	ID      string    `json:"id"`
-	Due     time.Time `json:"due"`
+	Course    string    `json:"course"`
+	Subject   string    `json:"subject"`
+	SubjectID string    `json:"subject_id"`
+	Name      string    `json:"name"`
+	ID        string    `json:"id"`
+	Due       time.Time `json:"due"`
 }
 
 // SetSchedule はTimeTreeに追加するスケジュールを格納する構造体
@@ -122,6 +132,16 @@ type ResSetSchedule struct {
 
 func init() {
 	var err error
+
+	// subjects.yaml に格納されているデータを取得
+	yamlData, err := ioutil.ReadFile("subjects.yaml")
+	if err != nil {
+		panic(err)
+	}
+	err = yaml.Unmarshal(yamlData, &subjects)
+	if err != nil {
+		panic(err)
+	}
 
 	// GAEはタイムゾーン指定できないので、Go側でタイムゾーンを指定する
 	loc, err := time.LoadLocation(location)

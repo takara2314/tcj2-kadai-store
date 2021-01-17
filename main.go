@@ -29,5 +29,5 @@ func lineRequestFunc(c *gin.Context) {
 
 // versionRequestFunc は/versionアクセスされたときの処理
 func versionRequestFunc(c *gin.Context) {
-	c.String(200, "TCJ2 Kadai Store - v0.1.2")
+	c.String(200, "TCJ2 Kadai Store - v0.1.3")
 }

@@ -12,7 +12,7 @@ import (
 func dbGetKadai(ctx context.Context, client *firestore.Client) {
 	var oneHwStatus map[string]interface{}
 
-	iter := client.Collection("kadais").Documents(ctx)
+	iter := client.Collection("kadais2").Documents(ctx)
 	for {
 		doc, err := iter.Next()
 
@@ -29,8 +29,9 @@ func dbGetKadai(ctx context.Context, client *firestore.Client) {
 
 		// 過去の課題情報としてメモリに格納する
 		// ※時刻データはUTCで返ってくるので、JSTに変換する
+		hwStatusPast[nowID] = append(hwStatusPast[nowID], oneHwStatus["course"])
 		hwStatusPast[nowID] = append(hwStatusPast[nowID], oneHwStatus["subject"])
-		hwStatusPast[nowID] = append(hwStatusPast[nowID], oneHwStatus["omitted"])
+		hwStatusPast[nowID] = append(hwStatusPast[nowID], oneHwStatus["subjectID"])
 		hwStatusPast[nowID] = append(hwStatusPast[nowID], oneHwStatus["name"])
 		hwStatusPast[nowID] = append(hwStatusPast[nowID], oneHwStatus["id"])
 		hwStatusPast[nowID] = append(hwStatusPast[nowID], timeDiffConv(oneHwStatus["due"].(time.Time)))
