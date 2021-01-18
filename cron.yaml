@@ -1,0 +1,5 @@
+cron:
+- description: "every 5 minutes job"
+  url: /version
+  schedule: every 5 minutes
+  timezine: Asia/Tokyo
