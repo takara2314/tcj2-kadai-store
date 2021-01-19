@@ -54,22 +54,32 @@ func ttAddSchedule(hwName string, hwSubject string, hwDue time.Time) (hwTTIDA st
 		Data: scheData,
 	}
 
-	// J2AのカレンダーにPOST
-	POSTjsonData.Data.Relationships.Label.Data.ID = os.Getenv("J2A_KADAI_LABEL_ID")
-	// 構造体をJSONに変換
-	POSTjson, _ = json.Marshal(POSTjsonData)
-	hwTTIDA, err = ttAddSchedulePOST(os.Getenv("J2A_CALENDAR_ID"), POSTjson)
-	if err != nil {
-		panic(err)
+	var targetClasses []string = targetClass(hwName)
+
+	if containClass(targetClasses, "J2A") {
+		// J2AのカレンダーにPOST
+		POSTjsonData.Data.Relationships.Label.Data.ID = os.Getenv("J2A_KADAI_LABEL_ID")
+		// 構造体をJSONに変換
+		POSTjson, _ = json.Marshal(POSTjsonData)
+		hwTTIDA, err = ttAddSchedulePOST(os.Getenv("J2A_CALENDAR_ID"), POSTjson)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		hwTTIDA = "Not Scheduled"
 	}
 
-	// J2BのカレンダーにPOST
-	POSTjsonData.Data.Relationships.Label.Data.ID = os.Getenv("J2B_KADAI_LABEL_ID")
-	// 構造体をJSONに変換
-	POSTjson, _ = json.Marshal(POSTjsonData)
-	hwTTIDB, err = ttAddSchedulePOST(os.Getenv("J2B_CALENDAR_ID"), POSTjson)
-	if err != nil {
-		panic(err)
+	if containClass(targetClasses, "J2B") {
+		// J2BのカレンダーにPOST
+		POSTjsonData.Data.Relationships.Label.Data.ID = os.Getenv("J2B_KADAI_LABEL_ID")
+		// 構造体をJSONに変換
+		POSTjson, _ = json.Marshal(POSTjsonData)
+		hwTTIDB, err = ttAddSchedulePOST(os.Getenv("J2B_CALENDAR_ID"), POSTjson)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		hwTTIDB = "Not Scheduled"
 	}
 
 	return
